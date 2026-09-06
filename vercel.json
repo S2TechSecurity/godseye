@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/api/ci/:path*", "destination": "/api/ci/:path*" }
+  ],
+  "headers": [
+    {
+      "source": "/api/ci/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ]
+}
