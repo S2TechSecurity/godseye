@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "lab:ci": "vitest run tests/unit/ciLabPolicy.test.js tests/unit/ciAuth.test.js tests/unit/integration.test.js tests/unit/layerHealth.test.js",
+    "lab:ci": "vitest run tests/unit/ciLabPolicy.test.js tests/unit/ciAuth.test.js tests/unit/integration.test.js tests/unit/layerHealth.test.js --maxWorkers=1 --minWorkers=1",
     "lab:policy": "node ./scripts/ci-lab-policy.mjs",
     "lab:feeds": "node ./scripts/feed-smoke.mjs",
     "lab:ci:public": "npm run lab:ci && npm run lab:feeds",
