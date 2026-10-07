@@ -282,16 +282,15 @@ First S2-owned passive lab run completed with evidence.
 ### Gate G
 First explicitly authorized defensive lab run completed with approval and receipt.
 
-## Repository governance issue
+## Repository governance
 
-Current origin:
-- fschrooge-netizen/godseye
+Completed on 2026-10-07:
+- created the organization fork at S2TechSecurity/godseye;
+- set S2TechSecurity/godseye as `origin`;
+- preserved VrushankPatel/godseye as `upstream`;
+- pushed `feature/ci-captain-lab` to the S2 organization fork.
 
-Required S2 canonical direction:
-- S2TechSecurity/godseye as origin;
-- VrushankPatel/godseye as upstream.
-
-The S2TechSecurity fork does not currently exist. Do not rewrite origin to a non-existent repository. Create/verify the organization fork first, then change origin safely.
+The legacy personal fork is no longer the canonical origin for this working copy.
 
 ## Production gate
 
