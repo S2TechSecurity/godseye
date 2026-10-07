@@ -923,3 +923,25 @@ Do not let these distract M1:
 This programme succeeds when an authorized S2 operator can ask Captain a real operational question, Captain can resolve the correct S2 systems and permissions, execute a measurable workflow, collect evidence with provenance, show what it did in Claw Studio, and return an answer that can be independently verified.
 
 The lab exists so new capability reaches that standard before production.
+
+
+## Cross-programme Captain alignment - 2026-10-07
+
+Shared Captain contracts are coordinated from:
+D:\dev\S2-Voice\docs\S2-CAPTAIN-CROSS-PROGRAM-ALIGNMENT.md
+
+CI ownership remains inside Godseye:
+- CI lab
+- cases/evidence
+- intelligence entities/relationships
+- feeds
+- FSK replay/intelligence
+- CCTV/vision observations
+- geospatial/timeline
+- defensive-security lab policy
+
+Acquisition remains the commercial source of truth and must not reuse CI surveillance/intelligence data for commercial prospecting merely because Captain can access both domains.
+
+The common skill-manifest, permission-class, execution-receipt, task-state and health-state contracts must remain compatible with Captain/Claw Studio.
+
+Free/trial provider capacity uses the same fail-closed rule as CI degraded feeds: a dependency may degrade or become ineligible without causing the system to lie about its state or silently move to paid capacity.
