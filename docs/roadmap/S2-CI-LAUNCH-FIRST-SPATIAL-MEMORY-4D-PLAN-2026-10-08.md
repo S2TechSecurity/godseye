@@ -1,11 +1,11 @@
-# S² Tech CI: Launch-First Programme and Deferred Spatial Memory / 4D Integration Plan
+# S2 Tech CI: Launch-First Programme and Deferred Spatial Memory / 4D Integration Plan
 
 **Document ID:** S2-CI-ROADMAP-4D-20261008  
 **Version:** 1.0 (implementation-ready planning, NOT an implementation release)  
 **Date:** 2026-10-08 (Africa/Johannesburg)  
-**Owner:** S² Tech Security / S² Intelligence  
+**Owner:** S2 Tech Security / S2 Intelligence  
 **Canonical repository:** `D:\dev\godseye` / `S2TechSecurity/godseye`  
-**Target production address:** `https://ci.s2tech.co.za` (letter i, not numeral 1)  
+**Target production address:** `https://ci.s2tech.co.za`  
 **Status:** 4D integration **DEFERRED / feature flag OFF**. Main CI platform is the current release priority.  
 **Source:** Bilawal Sidhu, *I Built a God’s Eye View of Time. The Internet Went Wild.* Transcript provided by project owner, 2026-10-08. Official upstream reference: https://github.com/bilawalsidhu/gods-eye-view  
 **Related authoritative files:** `docs/architecture/S2-CAPTAIN-CI-MASTER-IMPLEMENTATION-PLAN.md`, `docs/operations/S2-CI-EXECUTION-BACKLOG.md`, `docs/lab/S2-CI-LAB-TEST-MATRIX.md`, `docs/CI-AUTHENTICATION.md`, `AGENTS.md`.
@@ -18,17 +18,19 @@
 
 ### A1. Reachability and hosting checks
 
-Measurements taken from S2Tech1 and a second S² computer on 2026-10-08; they are **point-in-time**, not continuous monitoring.
+**Only target: `ci.s2tech.co.za` (letter i).** An earlier hostname with numeral 1 was a typo and is **not** part of this project's scope. Do not change or investigate another hostname for this project.
 
-| Probe | c1.s2tech.co.za (numeral 1) | ci.s2tech.co.za (letter i) |
-|---|---|---|
-| A-record | 197.242.144.174 | 41.76.208.103 |
-| Destination | Different host from known dedicated server | S² dedicated server address |
-| Strict TLS | Certificate hostname mismatch | Untrusted certificate chain |
-| HTTPS response with certificate checking disabled for diagnosis only | 200, Apache | 503, Service Unavailable |
-| Inference | Some website serves here, identity of intended CI application **unverified** | Reverse-proxy/host responds; CI application is **not available** through the public HTTPS route |
+Measurements taken from S2Tech1 and a second S2 Tech computer on 2026-10-08; these are **point-in-time**, not continuous monitoring.
 
-Root cause of `503` is **NOT** yet confirmed: possibilities include missing Coolify service, unhealthy upstream, invalid proxy target, inaccessible internal port, or mismatch between configured Docker domain and app. No claim of server-side root cause is justified until Coolify routes/container health/logs are inspected. Nonvalidated TLS must never be accepted for login.
+| Probe | ci.s2tech.co.za |
+|---|---|
+| A-record | 41.76.208.103 |
+| Destination | S2 Tech dedicated server address |
+| Strict TLS | Untrusted certificate chain |
+| HTTPS response with certificate checking disabled for diagnosis only | HTTP 503, Service Unavailable |
+| Inference | Reverse proxy/host responds; CI application is **not available** through the public HTTPS route |
+
+The cause of HTTP 503 is **not confirmed**. Check Coolify application status, upstream health, proxy configuration, Docker routing and live logs before changing anything. TLS verification bypass was used **for diagnosis only** and must not be used in production.
 
 ### A2. Source and lab baseline
 
@@ -51,16 +53,16 @@ Do not publish a progress percentage based on file count or branch count. Use th
 
 ## B. FIRST PRIORITY: Get the existing CI platform useful and online
 
-**Definition of minimum usable CI release (M0):** Authorized S² administrator can securely open `https://ci.s2tech.co.za`, authenticate, see the existing Cesium Godseye map and permitted public feed layers, inspect feed health, and log out; all protected server endpoints enforce roles. No Captain autonomy, active alarms, remote arm/disarm, customer footage, facial identification, or 4D reconstruction is necessary for this first milestone. Keep lab/advanced modules disabled until individually verified.
+**Definition of minimum usable CI release (M0):** Authorized S2 administrator can securely open `https://ci.s2tech.co.za`, authenticate, see the existing Cesium Godseye map and permitted public feed layers, inspect feed health, and log out; all protected server endpoints enforce roles. No Captain autonomy, active alarms, remote arm/disarm, customer footage, facial identification, or 4D reconstruction is necessary for this first milestone. Keep lab/advanced modules disabled until individually verified.
 
 ### B1. Immediate read-only infrastructure diagnosis, in order
 
 1. Identify the actual Coolify application for `ci.s2tech.co.za`, its deployed image/tag/commit, configured domain, ports, internal service name, health check and environment. Capture a redacted operator receipt. Avoid printing secrets.
 2. Read container status, restart counts, recent application error logs and reverse-proxy routing errors. Establish which component returned the HTTP 503.
 3. Check host Docker network memberships, upstream app port, binding to 0.0.0.0 *inside* the container, and service availability from the reverse proxy. Diagnose rather than restart blindly.
-4. Confirm Coolify is deploying from `S2TechSecurity/godseye` and an S²-owned, reviewed branch. The existing `production` branch is behind feature branches and must **not** be promoted without integration and tests.
+4. Confirm Coolify is deploying from `S2TechSecurity/godseye` and an S2-owned, reviewed branch. The existing `production` branch is behind feature branches and must **not** be promoted without integration and tests.
 5. Validate the correct hostname `ci.s2tech.co.za`, DNS, certificate issuer/chain, certificate hostname coverage, SNI, HTTPS redirect, and renewals. Obtain proper publicly trusted TLS. Do not bypass verification in production.
-6. Leave `c1.s2tech.co.za` unchanged pending an explicit DNS ownership decision; it currently points to a different IP and is not established as the CI production address.
+6. Keep all work limited to `ci.s2tech.co.za`. The numeral-1 spelling was a typo and is not a launch dependency.
 7. Record all read-only findings in the operations backlog, including owner, blocker, and observed timestamp.
 
 ### B2. Release candidate construction
@@ -69,7 +71,7 @@ Do not publish a progress percentage based on file count or branch count. Use th
 - Inventory differences and cherry-pick or merge only compatible commits. Resolve conflicts manually; no force push, no overwrite of data or secrets.
 - Retire Vercel-only runtime assumptions for the Coolify deployment path while preserving compatible application code. In particular, audit `api/ci/*` serverless endpoints and create equivalent server-side routes in the dedicated runtime; do not expose browser tokens or sign JWTs in frontend code.
 - Define explicit `/health` (process) and `/ready` (dependency readiness) endpoints with observable, secret-free health output. Prefer returning `503` honestly on unready dependencies rather than masking failures.
-- Configure a chosen S²-controlled OIDC/JWKS identity provider, proper `CI_AUTH_ISSUER`, `CI_AUTH_AUDIENCE`, `CI_AUTH_JWKS_URL` secrets server-side, TLS, allowed origins, and session expiry. No default or hard-coded shared administrator password.
+- Configure a chosen S2-controlled OIDC/JWKS identity provider, proper `CI_AUTH_ISSUER`, `CI_AUTH_AUDIENCE`, `CI_AUTH_JWKS_URL` secrets server-side, TLS, allowed origins, and session expiry. No default or hard-coded shared administrator password.
 - Validate `CI_ADMIN`, `CI_SUPERVISOR`, `CI_INVESTIGATOR`, `CI_ANALYST`, `CI_VIEWER`: login, unauthenticated denial, least-privilege behavior, logout, and password-reset path if offered.
 - Apply per-module feature flags: `ci.portal` ON after review; `ci.lab`, `ci.captain`, `ci.customer_camera`, `ci.remote_control`, `ci.spatial_memory` OFF until their gates pass.
 - Check external source license and terms. The MIT frontend license does **not** imply commercial rights for third-party imagery, feeds, tiles, recordings, or images.
@@ -111,7 +113,7 @@ Build an opt-in **Spatial Memory** subsystem that links source-aligned observati
 **Initial use cases (priority order):**
 1. Reconstruct a known test incident’s FSK signal, dispatch, CCTV snapshot/clip and vehicle movement on a shared timeline.
 2. Compare authorized video observations of one client site at different times or from different cameras.
-3. Display a static georeferenced 3D model/point cloud of an S²-owned training site.
+3. Display a static georeferenced 3D model/point cloud of an S2-owned training site.
 4. Reconstruct object movement within a short, controlled, multi-camera scene.
 5. Explore longer-term site change / satellite observation as clearly attributed layers.
 6. Forecasting or advanced anomaly analysis as separate, explicitly uncertain research, not actionable ground truth.
@@ -141,7 +143,7 @@ Approved, authorized source systems
              Case/evidence export; analyst review; Captain read-only skill
 ```
 
-The **S² Command/control room** remains the system of record for alarms, acknowledgments, dispatch and incident dispositions. Godseye stores **references and authorized copies**, never becomes the serial receiver or live alarm dispatcher. Any future remote control feature is separate and governed.
+The **S2 Command/control room** remains the system of record for alarms, acknowledgments, dispatch and incident dispositions. Godseye stores **references and authorized copies**, never becomes the serial receiver or live alarm dispatcher. Any future remote control feature is separate and governed.
 
 ### C3. Core data contracts (candidate, additive only)
 
@@ -164,7 +166,7 @@ Use UUIDs, constrained foreign keys, tenant/site row-level access, UTC timestamp
 
 **Stage 0: source registration and authority.** Approved dataset, lawful authorization, retention rule and target geofence are recorded. Deny ingestion if provenance, permissions or consent basis are missing.
 
-**Stage 1: acquisition.** Pull selected alarm/event metadata, authorized CCTV clips/images and eligible telemetry through existing S² adapters. Honor connector quotas and rate limits. No direct access to client routers or cameras outside an approved integration path. Preserve source originals, record cryptographic hashes and read time.
+**Stage 1: acquisition.** Pull selected alarm/event metadata, authorized CCTV clips/images and eligible telemetry through existing S2 adapters. Honor connector quotas and rate limits. No direct access to client routers or cameras outside an approved integration path. Preserve source originals, record cryptographic hashes and read time.
 
 **Stage 2: time and coordinates.** Normalize all timestamps to UTC with source clock offset and uncertainty. Georeference sensor positions and observations; distinguish measured GPS from estimated camera rays or inferred event sites. Maintain transforms from image/video pixel to camera to local scene to WGS84.
 
@@ -188,7 +190,7 @@ Use UUIDs, constrained foreign keys, tenant/site row-level access, UTC timestamp
 - Offline/error/degraded states that tell the truth. Redaction controls for faces, number plates and private surroundings where required.
 - Permission-scope controls for export/share and a logged review/approval workflow.
 - Keyboard and touch support. Keep data volume bounded so mobile operator access remains usable.
-- Subtle S² Tech branding consistent with the main application.
+- Subtle S2 Tech branding consistent with the main application.
 
 ### C6. Technical evaluation matrix
 
@@ -201,7 +203,7 @@ Use UUIDs, constrained foreign keys, tenant/site row-level access, UTC timestamp
 | Drone mapping | OpenDroneMap | Orthomosaic/3D outdoor scenes | Optional, no extra client hardware |
 | NeRF/Gaussian splatting | Nerfstudio/gsplat | Realistic scene exploration | Lab GPU resource and license review |
 | 3D transport | glTF / 3D Tiles / point-cloud variants | Cesium-friendly assets | Benchmark browser sizes and LOD |
-| Clips and snapshots | Existing S² Edge media adapters / go2rtc where authorized | Reduce duplicate ingest | Never expose credentials or unrestricted streams |
+| Clips and snapshots | Existing S2 Edge media adapters / go2rtc where authorized | Reduce duplicate ingest | Never expose credentials or unrestricted streams |
 | Batch jobs | Existing governed worker/queue | Bounded async processing | Quotas and reproducible logs |
 
 Do not promise that these libraries reproduce the author's proprietary or unreleased workflow. Benchmark before adoption. Review upstream MIT source separately from each feed, tile, model, dataset and external media license.
@@ -303,8 +305,8 @@ The phase ordering must not become a blocker for M0, M1 or M2.
 
 - **Product / operations owner:** defines operator workflows, clients/scopes and launch approval.
 - **CI engineering:** Cesium/UI, APIs, schemas, feature flags, integration and test automation.
-- **S² Command/FSK integration owner:** provides stable read-only incident references and fixture interface; owns live receiver isolation.
-- **S² Edge/CCTV owner:** camera/site metadata, authorized clips and stream health.
+- **S2 Command/FSK integration owner:** provides stable read-only incident references and fixture interface; owns live receiver isolation.
+- **S2 Edge/CCTV owner:** camera/site metadata, authorized clips and stream health.
 - **Privacy/security reviewer:** approval scopes, role tests, evidential integrity and incident controls.
 - **Independent release verifier:** checks code, tests, deployment evidence and rollback prior to production promotion.
 
